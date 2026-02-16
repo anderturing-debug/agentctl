@@ -18,7 +18,7 @@ class OllamaProvider(BaseProvider):
 
     def __init__(self, endpoint: str = "http://localhost:11434", **kwargs):
         self.endpoint = endpoint.rstrip("/")
-        self.client = httpx.AsyncClient(base_url=self.endpoint, timeout=120.0)
+        self.client = httpx.AsyncClient(base_url=self.endpoint, timeout=300.0)
 
     async def complete(self, messages: list[Message], **kwargs) -> Response:
         model = kwargs.get("model", "llama3.1:8b")

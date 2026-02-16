@@ -85,12 +85,24 @@ async def _run(
         kwargs["max_tokens"] = max_tokens
 
     if stream:
+        import time as _time
+
         collected = ""
+        start = _time.monotonic()
         with Live(console=console, refresh_per_second=10) as live:
             async for chunk in instance.stream(messages, **kwargs):
                 collected += chunk
                 live.update(Markdown(collected))
+        latency = (_time.monotonic() - start) * 1000
         console.print()
+        console.print(
+            Panel(
+                f"[dim]Model: {model} | "
+                f"Cost: $0.0000 | "
+                f"Latency: {latency:.0f}ms[/dim]",
+                style="dim",
+            )
+        )
     else:
         with console.status("[bold cyan]Thinking...[/bold cyan]"):
             response = await instance.complete(messages, **kwargs)
